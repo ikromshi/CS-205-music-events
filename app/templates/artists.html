@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>List of Ithaca artists:</h1>
+  {% for artist in artists%}
+    <p>
+      <a href="{{ url_for('artist') }}">{{artist}}</a>
+    </p>
+  {% endfor %}
+{% endblock %}

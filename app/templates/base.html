@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }} - Microblog</title>
+        {% else %}
+        <title>Welcome to Microblog</title>
+        {% endif %}
+    </head>
+    <body>
+        <div>
+            <a href="{{ url_for('index') }}">Ithaca Music:</a>
+            <a href="{{ url_for('artists') }}">Artists</a>
+            <a href="{{ url_for('new_artist') }}">Artists</a>
+        </div>
+        {% block content %}{% endblock %}
+    </body>
+</html>
