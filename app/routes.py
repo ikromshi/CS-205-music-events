@@ -77,16 +77,16 @@ def new_artist():
   form = NewArtist()
   if form.validate_on_submit():
     if (db.session.query(Artist).filter_by(name = form.name.data).first()):
-        flash("Artist already exists")
+        flash("This artist already exists")
         return render_template('new_artist.html', form = form)
-    flash('New Artist Created: {}, '.format(form.name.data))
     new_artist = Artist()
     new_artist.set_artist(name=form.name.data, hometown=form.hometown.data, about_me_in=form.about_me.data)
     db.session.add(new_artist)
     db.session.commit()
     artists = db.session.query(Artist).all()
 
-    return render_template('artists.html', artists=artists)
+    flash('New Artist Created: {}. '.format(form.name.data))
+    return redirect('artists')
   return render_template("new_artist.html", form=form)
 
 

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% for message in get_flashed_messages() %}
+  <h1>{{ message }}</h1>
+{% endfor %}
 <h1>Create a New Artist</h1>
     <form method="post" novalidate>
         {{ form.hidden_tag() }}
