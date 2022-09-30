@@ -1,31 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% if name %}
-    <p>- New artist created: {{name}}</p>
-    <h2><strong>{{name}}</strong></h2>
-    <h3><strong>{{hometown}}</strong></h3>
-    <p>{{description}}</p>
-  {% else %}
-  <form action="" method="post" novalidate>
-      {{ form.hidden_tag() }}
-      <p>
-          {{ form.name.label }}<br>
-          {{ form.name(size=32) }}<br>
-          {% for error in form.name.errors %}
-          <span style="color: red;">[{{ error }}]</span>
-          {% endfor %}
-      </p>
-      <p>
-          {{ form.hometown.label }}<br>
-          {{ form.hometown(size=32) }}<br>
-          {% for error in form.hometown.errors %}
-          <span style="color: red;">[{{ error }}]</span>
-          {% endfor %}
-      </p>
-      <p> {{ form.description.label }}</p>
-      {{ form.description(size=150) }}<br>
-      <p>{{ form.submit() }}</p>
-  </form>
-  {% endif %}
+<h1>Create a New Artist</h1>
+    <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}<br>
+        </p>
+        <p>
+            {{ form.hometown.label }}<br>
+            {{ form.hometown(size=32) }}<br>
+        </p>
+        <p>
+            {{ form.about_me.label }}<br>
+            {{ form.about_me(cols = "200", rows = "40") }}<br>
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
 {% endblock %}

@@ -1,35 +1,56 @@
-from datetime import datetime
+# from datetime import datetime
+import datetime
 from flask import render_template, flash, redirect, url_for
 from app import app, db
 from app.forms import NewArtist
 from app.models import Artist, ArtistToEvent, Venue, Event
 
 
-@app.route("/populate_db")
-def populate_db():
-  reset_db()
+@app.route("/reset_db")
+def reset_db():
+  clear_data()
 
-  a1 = Artist(name="Denny", about_me="Musician")
-  a2 = Artist(name="Donavan", about_me="Musician")
-  a3 = Artist(name="Tyler", about_me="Musician")
-  a4 = Artist(name="Drew", about_me="Musician")
+  a1 = Artist(name="Denny", hometown="Ithaca", about_me="Piano perfomer")
+  a2 = Artist(name="Donavan", hometown="Ithaca", about_me="Violin player")
+  a3 = Artist(name="Tyler", hometown="Ithaca", about_me="Plays drums")
+  a4 = Artist(name="Drew", hometown="Ithaca", about_me="Singer/backup dancer")
+  a5 = Artist(name="Dusan", hometown="Ithaca", about_me="Choir leader")
+  a6 = Artist(name="Chris", hometown="Ithaca", about_me="Opera singer")
+  db.session.add_all([a1, a2, a3, a4, a5, a6])
   db.session.commit()
-  db.session.add_all([a1, a2, a3, a4])
+
+
+  e1 = Event(title="Live Music Jam", location="Ithaca Commons", date_time=datetime.datetime(2022, 7, 23, 17, 0, 0),venue_id=1)
+  e2 = Event(title="Hip Hop Night", location="local station",date_time=datetime.datetime(2024, 1, 13, 7, 30, 0),venue_id=1)
+  e3 = Event(title="Porchfest Again", location="Cambridge Musical Ceremony", date_time=datetime.datetime(2023, 12, 30, 19, 0, 0),venue_id=3)
+  e4 = Event(title="Birthday Celebration", location="local station", date_time=datetime.datetime(2024, 1, 1, 12, 0, 0), venue_id=2)
+  e5 = Event(title="New Year's Eve", location="the big stadium", date_time=datetime.datetime(2023, 12, 30, 19, 0, 0),venue_id=3)
+  e6 = Event(title="Thanksgiving concert", location="the big staium", date_time=datetime.datetime(2024, 1, 1, 12, 0, 0), venue_id=2)
+  e7 = Event(title="Ikrom's birthday", location="usual place", date_time=datetime.datetime(2023, 12, 30, 19, 0, 0),venue_id=3)
+  e8 = Event(title="Birthday Celebration", location="the big stadium", date_time=datetime.datetime(2024, 1, 1, 12, 0, 0), venue_id=2)
+  db.session.add_all([e1, e2, e3, e4, e5, e6, e7, e8])
+  db.session.commit()
+
+  aE1 = ArtistToEvent(artist_id=1, event_id=3)
+  aE2 = ArtistToEvent(artist_id=1, event_id=4)
+  aE3 = ArtistToEvent(artist_id=2, event_id=6)
+  aE4 = ArtistToEvent(artist_id=3, event_id=5)
+  aE5 = ArtistToEvent(artist_id=4, event_id=1)
+  aE6 = ArtistToEvent(artist_id=5, event_id=8)
+  aE7 = ArtistToEvent(artist_id=6, event_id=7)
+  db.session.add_all([aE1, aE2, aE3, aE4, aE5, aE6, aE7])  
+  db.session.commit()
+
 
   v1 = Venue(location="Ithaca", size=120)
   v2 = Venue(location="Ithaca", size=200)
   v3 = Venue(location="Cambridge", size=750)
   v4 = Venue(location="NYC", size=150000)
-  db.session.commit()
   db.session.add_all([v1, v2, v3, v4])
-
-  e1 = Event(title="Live Music Jam", location="Ithaca Commons", date_time=datetime.datetime(2022, 7, 23, 17, 0, 0),venue_id=1)
-  e2 = Event(title="Hip Hop Night", location="local station",date_time=datetime.datetime(2024, 1, 13, 7, 30, 0),venue_id=1)
-  e3 = Event(title="Porchfest Again", location="Cambridge Musical Ceremony", date_time=datetime.datetime(2023, 12, 30, 19, 0, 0),venue_id=3)
-  e4 = Event(title="Birthday Celebration", location="drive way", date_time=datetime.datetime(2024, 1, 1, 12, 0, 0), venue_id=2)
   db.session.commit()
-  db.session.add_all([e1, e2, e3, e4])
 
+
+  return ""
 
 @app.route('/')
 @app.route('/index')
@@ -55,13 +76,21 @@ def artist(name):
 def new_artist():
   form = NewArtist()
   if form.validate_on_submit():
-    # flash('New user created: {}; location: {}'.format(
-    #   form.name.data, form.hometown.data))
-    return render_template("new_artist.html", form=form, name=form.name.data, hometown=form.hometown.data, description=form.description.data)
-  return render_template('new_artist.html', form=form)
+    if (db.session.query(Artist).filter_by(name = form.name.data).first()):
+        flash("Artist already exists")
+        return render_template('new_artist.html', form = form)
+    flash('New Artist Created: {}, '.format(form.name.data))
+    new_artist = Artist()
+    new_artist.set_artist(name=form.name.data, hometown=form.hometown.data, about_me_in=form.about_me.data)
+    db.session.add(new_artist)
+    db.session.commit()
+    artists = db.session.query(Artist).all()
+
+    return render_template('artists.html', artists=artists)
+  return render_template("new_artist.html", form=form)
 
 
-def reset_db():
+def clear_data():
    flash("Resetting database: deleting old data and repopulating with dummy data")
    # clear all data from all tables
    meta = db.metadata
