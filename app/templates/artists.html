@@ -3,8 +3,8 @@
 {% block content %}
   <h1>List of Ithaca artists:</h1>
   {% for artist in artists%}
-    <p>
-      <a href="{{ url_for('artist') }}">{{artist}}</a>
-    </p>
+    <div>
+      <a href="{{ url_for('artist', name=artist.name) }}">{{artist.name}}</a>
+    </div>
   {% endfor %}
 {% endblock %}

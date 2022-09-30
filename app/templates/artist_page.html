@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ artist.name }}</h1>
+  <div>
+    <p>About the artist: {{ artist.about_me }}</p>
+  </div>
+  
+  
+  <h2> Events: </h2>
+  {% if events %}
+    {% for event in events %}
+    <div>
+      <p>{{ event.title }} at the {{ event.location }} on {{ event.date }}</p>
+    </div>
+    {% endfor %}
+
+  {% else %}
+      <div>
+        <p>No events for this artist</p>
+      </div>
+  {%  endif %}
+{% endblock %}
