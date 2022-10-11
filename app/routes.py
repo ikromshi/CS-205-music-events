@@ -160,7 +160,7 @@ def new_venue():
     db.session.add(venue)
     db.session.commit()
 
-    return render_template('index.html', title="Home", description="")
+    return redirect(url_for('index'))
 
   return render_template('new_venue.html', title = "Create New Venue", form = form)
 
@@ -190,6 +190,6 @@ def new_event():
       db.session.add(connection)
       db.session.commit()
 
-    return render_template('index.html', title="Home", description="")
+    return redirect(url_for('index'))
 
   return render_template('new_event.html', title = "Create New Event", form = form)
