@@ -6,7 +6,7 @@ from app.models import Artist, ArtistToEvent, Venue, Event, User
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, VenueForm, EventForm
 
 
 @app.route("/reset_db")
@@ -45,10 +45,10 @@ def reset_db():
   db.session.commit()
 
 
-  v1 = Venue(location="Ithaca", size=120)
-  v2 = Venue(location="Ithaca", size=200)
-  v3 = Venue(location="Cambridge", size=750)
-  v4 = Venue(location="NYC", size=150000)
+  v1 = Venue(name="Venuue 1", location="Ithaca", size=120)
+  v2 = Venue(name="Venuue 4", location="Ithaca", size=200)
+  v3 = Venue(name="Venuue 3", location="Cambridge", size=750)
+  v4 = Venue(name="Venuue 2", location="NYC", size=150000)
   db.session.add_all([v1, v2, v3, v4])
   db.session.commit()
   return ""
@@ -144,3 +144,52 @@ def register():
     flash('Congratulations, you are now a registered user!')
     return redirect(url_for('login'))
   return render_template('register.html', title='Register', form=form)
+
+
+@login_required
+@app.route('/new_venue', methods = ['GET', 'POST'])
+def new_venue():
+  form = VenueForm()
+  if form.validate_on_submit():
+    if (db.session.query(Venue).filter_by(name = form.name.data).first()):
+      flash("Venue already exists")
+      return render_template('new_venue.html', title = "Create New Venue", form = form)
+    flash('New Venue Created: {}, '.format(
+      form.name.data))
+    venue = Venue(form.name.data, form.address.data, form.size.data)
+    db.session.add(venue)
+    db.session.commit()
+
+    return render_template('index.html', title="Home", description="")
+
+  return render_template('new_venue.html', title = "Create New Venue", form = form)
+
+
+@login_required
+@app.route('/new_event', methods = ['GET', 'POST'])
+def new_event():
+  artists = db.session.query(Artist).all()
+  venues = db.session.query(Venue).all()
+  artistList = [(i.id, i.name) for i in artists]
+  venueList = [(i.id) for i in venues]
+  form = EventForm()
+  form.artists.choices = artistList
+  form.venue.choices = venueList
+  if form.validate_on_submit():
+    if (db.session.query(Event).filter_by(title = form.title.data).first()):
+      flash("Event already exists")
+      return render_template('new_event.html', title = "Create New Event", form = form)
+    flash('New Event Created: {}, '.format(
+      form.title.data))
+    event = Event(title=form.title.data, date_time=form.date.data, location="Ithaca", venue_id=form.venue.data)
+    db.session.add(event)
+    db.session.commit()
+    eventID = event.id
+    for artist in form.artists.data:
+      connection = ArtistToEvent(eventID, artist)
+      db.session.add(connection)
+      db.session.commit()
+
+    return render_template('index.html', title="Home", description="")
+
+  return render_template('new_event.html', title = "Create New Event", form = form)

@@ -6,7 +6,7 @@
         {{ form.hidden_tag() }}
         <p>
           {% for message in get_flashed_messages() %}
-            <h1>{{ message }}</h1>
+            <h3>{{ message }}</h3>
           {% endfor %}
         </p>
         <p>

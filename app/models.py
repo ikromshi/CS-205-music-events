@@ -20,9 +20,15 @@ class Artist(db.Model):
 
 class Venue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True)
     location = db.Column(db.String(64), index=True)
     size = db.Column(db.Integer, index=True)
     events = db.relationship("Event", backref="venue", lazy="dynamic")
+
+    def __init__(self, name, location, size):
+        self.name = name
+        self.location = location
+        self.size = size
 
 
 class Event(db.Model):
@@ -32,11 +38,27 @@ class Event(db.Model):
     date_time = db.Column(db.DateTime, index=True)
     venue_id = db.Column(db.Integer, db.ForeignKey("venue.id"))
 
+    def __repr__(self):
+        return '<Event {}>'.format(self.title)
+
+    def __init__(self, title, date_time, location, venue_id):
+        self.title = title
+        self.date_time = date_time
+        self.location = location
+        self.venue_id = venue_id
+
 
 class ArtistToEvent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(db.Integer, db.ForeignKey("artist.id"))
     event_id = db.Column(db.Integer, db.ForeignKey("event.id"))
+
+    def __repr__(self):
+        return '<ArtistToEvent {}>'.format(self.id)
+
+    def __init__(self, event_id, artist_id):
+        self.event_id = event_id
+        self.artist_id = artist_id
 
 
 class User(UserMixin, db.Model):

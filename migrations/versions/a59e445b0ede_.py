@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 844d62fdc082
+Revision ID: a59e445b0ede
 Revises: 
-Create Date: 2022-09-30 00:01:29.007064
+Create Date: 2022-10-11 00:59:03.151363
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '844d62fdc082'
+revision = 'a59e445b0ede'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,17 +21,30 @@ def upgrade():
     op.create_table('artist',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=True),
+    sa.Column('hometown', sa.String(length=64), nullable=True),
     sa.Column('about_me', sa.String(length=140), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_artist_hometown'), 'artist', ['hometown'], unique=False)
     op.create_index(op.f('ix_artist_name'), 'artist', ['name'], unique=False)
+    op.create_table('user',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(length=64), nullable=True),
+    sa.Column('email', sa.String(length=120), nullable=True),
+    sa.Column('password_hash', sa.String(length=128), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
+    op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.create_table('venue',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=64), nullable=True),
     sa.Column('location', sa.String(length=64), nullable=True),
     sa.Column('size', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_venue_location'), 'venue', ['location'], unique=False)
+    op.create_index(op.f('ix_venue_name'), 'venue', ['name'], unique=False)
     op.create_index(op.f('ix_venue_size'), 'venue', ['size'], unique=False)
     op.create_table('event',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -64,8 +77,13 @@ def downgrade():
     op.drop_index(op.f('ix_event_date_time'), table_name='event')
     op.drop_table('event')
     op.drop_index(op.f('ix_venue_size'), table_name='venue')
+    op.drop_index(op.f('ix_venue_name'), table_name='venue')
     op.drop_index(op.f('ix_venue_location'), table_name='venue')
     op.drop_table('venue')
+    op.drop_index(op.f('ix_user_username'), table_name='user')
+    op.drop_index(op.f('ix_user_email'), table_name='user')
+    op.drop_table('user')
     op.drop_index(op.f('ix_artist_name'), table_name='artist')
+    op.drop_index(op.f('ix_artist_hometown'), table_name='artist')
     op.drop_table('artist')
     # ### end Alembic commands ###

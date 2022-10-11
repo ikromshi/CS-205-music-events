@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField, PasswordField, BooleanField
+from wtforms import StringField, TextAreaField, SubmitField, PasswordField, BooleanField, SelectField, SelectMultipleField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.fields.datetime import DateField
 from app.models import User
 
 class NewArtist(FlaskForm):
@@ -33,3 +34,18 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+
+class VenueForm(FlaskForm):
+    name = StringField('Venue Name', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    size = IntegerField('Size', validators=[DataRequired()])
+    submit = SubmitField('Create New Venue')
+
+
+class EventForm(FlaskForm):
+    title = StringField('Event Title', validators=[DataRequired()])
+    date = DateField('Date and Time', validators=[DataRequired()])
+    venue = SelectField('Venue', coerce=int, validators=[DataRequired()])
+    artists = SelectMultipleField('Artists', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Create New Event')
