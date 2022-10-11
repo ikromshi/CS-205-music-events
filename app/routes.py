@@ -171,7 +171,7 @@ def new_event():
   artists = db.session.query(Artist).all()
   venues = db.session.query(Venue).all()
   artistList = [(i.id, i.name) for i in artists]
-  venueList = [(i.id) for i in venues]
+  venueList = [(i.id, i.name) for i in venues]
   form = EventForm()
   form.artists.choices = artistList
   form.venue.choices = venueList
@@ -181,7 +181,8 @@ def new_event():
       return render_template('new_event.html', title = "Create New Event", form = form)
     flash('New Event Created: {}, '.format(
       form.title.data))
-    event = Event(title=form.title.data, date_time=form.date.data, location="Ithaca", venue_id=form.venue.data)
+    location = db.session.query(Venue).filter_by(id = form.venue.data).first().name
+    event = Event(title=form.title.data, date_time=form.date.data, location=location, venue_id=form.venue.data)
     db.session.add(event)
     db.session.commit()
     eventID = event.id
