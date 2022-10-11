@@ -10,8 +10,13 @@
     <body>
         <div>
             <a href="{{ url_for('index') }}">Ithaca Music:</a>
+            {% if current_user.is_anonymous %}
+            <a href="{{ url_for('login') }}">Login</a>
+            {% else %}
             <a href="{{ url_for('artists') }}">Artists</a>
             <a href="{{ url_for('new_artist') }}">New Artist</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
         </div>
         {% block content %}{% endblock %}
     </body>

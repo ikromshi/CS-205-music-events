@@ -5,6 +5,11 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>
+          {% for message in get_flashed_messages() %}
+            <h1>{{ message }}</h1>
+          {% endfor %}
+        </p>
+        <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
             {% for error in form.username.errors %}

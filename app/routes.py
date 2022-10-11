@@ -60,12 +60,14 @@ def index():
   return render_template('index.html')
 
 
+@login_required
 @app.route('/artists')
 def artists():
   artists = db.session.query(Artist).all()
   return render_template('artists.html',  artists=artists)
 
 
+@login_required
 @app.route('/artist/<name>')
 def artist(name):
   artist = db.session.query(Artist).filter_by(name=name).first()
@@ -74,6 +76,7 @@ def artist(name):
   return render_template('artist_page.html', title=name, artist=artist, events=events)
 
 
+@login_required
 @app.route('/new_artist', methods=['GET', 'POST'])
 def new_artist():
   form = NewArtist()
