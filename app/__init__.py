@@ -1,7 +1,7 @@
 from ensurepip import bootstrap
-import logging
-from logging.handlers import SMTPHandler, RotatingFileHandler
-import os
+# import logging
+# from logging.handlers import SMTPHandler, RotatingFileHandler
+# import os
 # from app.config import Config
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
@@ -22,4 +22,4 @@ login.login_view = 'login'
 mail = Mail(app)
 bootstrap = Bootstrap(app)
 
-from app import routes
+from app import routes, models, errors

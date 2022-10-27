@@ -20,11 +20,11 @@
           {% if current_user.is_anonymous %}
             <li><a href="{{ url_for('login') }}">Login</a></li>
           {% else %}
-          <a class="nav-link active" aria-current="page" href="{{url_for('artists')}}">Artists</a>
-          <a class="nav-link" href="{{url_for('new_artist')}}">New Artist</a>
-          <a class="nav-link" href="{{url_for('new_event')}}">New Event</a>
-          <a class="nav-link" href="{{url_for('new_venue')}}">New Venue</a>
-          <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
+            <a class="nav-link active" aria-current="page" href="{{url_for('artists')}}">Artists</a>
+            <a class="nav-link" href="{{url_for('new_artist')}}">New Artist</a>
+            <a class="nav-link" href="{{url_for('new_event')}}">New Event</a>
+            <a class="nav-link" href="{{url_for('new_venue')}}">New Venue</a>
+            <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
           {% endif %}
         </div>
       </div>
